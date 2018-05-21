@@ -308,6 +308,23 @@ void test_SMILES_Valence()
   OB_COMPARE(conv.WriteString(&mol, true), "C[H:1]");
 }
 
+void test_cdxml_conversion()
+{
+  cout << "test cdxml!! \n";
+  // Test writing U smiles after I smiles
+  OBConversion conv;
+  conv.SetInFormat("smi");
+  OBMol mol;
+  conv.ReadString(&mol, "C(=O)([O-])C(=O)O");
+  conv.SetOutFormat("smi");
+  conv.SetOptions("I", OBConversion::OUTOPTIONS);
+  std::string res = conv.WriteString(&mol, true);
+  OB_COMPARE(res, "C(=O)(C(=O)O)[O-]");
+  conv.SetOptions("U", OBConversion::OUTOPTIONS);
+  res = conv.WriteString(&mol, true);
+  OB_COMPARE(res, "C(=O)(C(=O)[O-])O");
+}
+
 int regressionstest(int argc, char* argv[])
 {
   int defaultchoice = 1;
@@ -330,6 +347,9 @@ int regressionstest(int argc, char* argv[])
   switch(choice) {
   case 1:
     test_Issue135_UniversalSmiles();
+    break;
+  case 2:
+    test_cdxml_conversion();
     break;
   case 221:
     test_Issue134_InChI_addH();
