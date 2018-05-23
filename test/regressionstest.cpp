@@ -310,19 +310,20 @@ void test_SMILES_Valence()
 
 void test_cdxml_conversion()
 {
-  cout << "test cdxml!! \n";
-  // Test writing U smiles after I smiles
+  cout << "test cdxml!!!! \n";
+
   OBConversion conv;
-  conv.SetInFormat("smi");
   OBMol mol;
-  conv.ReadString(&mol, "C(=O)([O-])C(=O)O");
-  conv.SetOutFormat("smi");
-  conv.SetOptions("I", OBConversion::OUTOPTIONS);
-  std::string res = conv.WriteString(&mol, true);
-  OB_COMPARE(res, "C(=O)(C(=O)O)[O-]");
-  conv.SetOptions("U", OBConversion::OUTOPTIONS);
-  res = conv.WriteString(&mol, true);
-  OB_COMPARE(res, "C(=O)(C(=O)[O-])O");
+  conv.SetInFormat("mol");
+  conv.SetOutFormat("cdxml");
+  conv.SetOutputIndex(1);
+
+  conv.ReadFile(&mol, OBTestUtil::GetFilename("alanine.mol"));
+  std::string cdxmlFromMol = conv.WriteString(&mol, true);
+
+  std::string cdxmlTarget = OBTestUtil::ReadFileContent("alanine.cdxml");
+
+  OB_COMPARE(cdxmlFromMol, cdxmlTarget);
 }
 
 int regressionstest(int argc, char* argv[])
